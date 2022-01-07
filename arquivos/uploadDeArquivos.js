@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 
 //metodo sincrono
 // fs.readFile('./assets/salsicha.jpg', (erro, buffer) => {
@@ -11,12 +12,22 @@ const fs = require('fs')
 // })
 
 //metodo assincrono
-module.exports = (caminho, nomeDoArquivo, callBackImagemCriada) =>{
+module.exports = (caminho, nomeDoArquivo, callBackImagemCriada) => {
 
-  const novoCaminho = `./assets/imagens/${nomeDoArquivo}`
-  fs.createReadStream(caminho)
-    .pipe(fs.createWriteStream(novoCaminho))
-    .on('finish', () =>{
-      callBackImagemCriada(novoCaminho)
-    })
+  const tiposValidos = ['.jpg', '.png', '.jpeg']
+  const tipo = path.extname(caminho)
+  const tipoEhValido = tiposValidos.indexOf(tipo) !== -1
+
+  if (tipoEhValido) {
+    const novoCaminho = `./assets/imagens/${nomeDoArquivo}${tipo}`
+    fs.createReadStream(caminho)
+      .pipe(fs.createWriteStream(novoCaminho))
+      .on('finish', () => {
+        callBackImagemCriada(false, novoCaminho)
+      })
+  } else {
+    const erro = "Tipo é inválido"
+    console.log('Erro! Tipo de arquivo invalido')
+    callBackImagemCriada(erro)
+  }
 }
