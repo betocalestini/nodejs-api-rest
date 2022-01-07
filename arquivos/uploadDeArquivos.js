@@ -11,8 +11,12 @@ const fs = require('fs')
 // })
 
 //metodo assincrono
-fs.createReadStream('./assets/salsicha.jpg')
-  .pipe(fs.createWriteStream('./assets/salsicha3.jpg'))
-  .on('finish', () =>{
-    console.log('A imagem foi escrita com sucesso')
-  })
+module.exports = (caminho, nomeDoArquivo, callBackImagemCriada) =>{
+
+  const novoCaminho = `./assets/imagens/${nomeDoArquivo}`
+  fs.createReadStream(caminho)
+    .pipe(fs.createWriteStream(novoCaminho))
+    .on('finish', () =>{
+      callBackImagemCriada(novoCaminho)
+    })
+}
